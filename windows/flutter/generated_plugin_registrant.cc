@@ -9,7 +9,6 @@
 #include <audioplayers_windows/audioplayers_windows_plugin.h>
 #include <dart_vlc/dart_vlc_plugin.h>
 #include <network_info_plus/network_info_plus_windows_plugin.h>
-#include <screen_brightness_windows/screen_brightness_windows_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   AudioplayersWindowsPluginRegisterWithRegistrar(
@@ -18,6 +17,4 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("DartVlcPlugin"));
   NetworkInfoPlusWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("NetworkInfoPlusWindowsPlugin"));
-  ScreenBrightnessWindowsPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("ScreenBrightnessWindowsPlugin"));
 }

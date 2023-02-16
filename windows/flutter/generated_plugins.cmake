@@ -6,7 +6,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   dart_vlc
   network_info_plus
-  screen_brightness_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

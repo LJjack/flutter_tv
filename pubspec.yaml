@@ -18,7 +18,7 @@ dependencies:
   card_swiper: ^2.0.4
 
   flutter_easyloading: ^3.0.5
-  screen_brightness: ^0.2.2
+  video_player_macos: ^1.0.6
 
 dev_dependencies:
   flutter_test:
