@@ -1,0 +1,53 @@
+name: flutter_tv
+description: 电视显示
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.6 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.2
+  network_info_plus: ^3.0.2
+  play: ^0.0.17
+  card_swiper: ^2.0.4
+
+  flutter_easyloading: ^3.0.5
+  screen_brightness: ^0.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - images/bg0.jpeg
+    - images/bg1.jpeg
+    - images/bg2.jpeg
+    - images/bg.jpeg
+    - images/1.png
+    - images/2.png
+    - images/3.png
+    - images/Butterfly-209.mp4
+
+    - assets/flutter-mark-square-64.png
+    - assets/Butterfly-209.mp4
+    - assets/Butterfly-209.webm
+    - assets/bumble_bee_captions.srt
+    - assets/bumble_bee_captions.vtt
+    - assets/Audio.mp3
+
