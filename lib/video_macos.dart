@@ -28,7 +28,7 @@ class _VideoViewMacOSState extends State<VideoViewMacOS> {
 
   initAsync() async {
     try {
-      _videoPlayerController = VideoPlayerController.asset(widget.url);
+      _videoPlayerController = VideoPlayerController.network(widget.url);
       await _videoPlayerController!.initialize();
 
       _chewieController = ChewieController(

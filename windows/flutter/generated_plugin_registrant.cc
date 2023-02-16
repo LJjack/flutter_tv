@@ -6,12 +6,15 @@
 
 #include "generated_plugin_registrant.h"
 
+#include <audioplayers_windows/audioplayers_windows_plugin.h>
+#include <dart_vlc/dart_vlc_plugin.h>
 #include <network_info_plus/network_info_plus_windows_plugin.h>
-#include <video_player_win/video_player_win_plugin_c_api.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
+  AudioplayersWindowsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("AudioplayersWindowsPlugin"));
+  DartVlcPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("DartVlcPlugin"));
   NetworkInfoPlusWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("NetworkInfoPlusWindowsPlugin"));
-  VideoPlayerWinPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("VideoPlayerWinPluginCApi"));
 }
