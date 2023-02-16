@@ -5,17 +5,16 @@ import 'package:flutter_tv/video_image.dart';
 import 'package:flutter_tv/video_macos.dart';
 import 'package:flutter_tv/video_play_view.dart';
 
-import 'movie_room.dart';
+import 'package:play/play.dart';
 
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-// import 'package:video_player_win/video_player_win_plugin.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await playInitialize();
   ///强制竖屏
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
@@ -27,8 +26,6 @@ void main() {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
-
-  // if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
 
 
   runApp(const MyApp());
@@ -89,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(onPressed: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return  VideoPlayView('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
+                return  VideoPlayView('assets/Butterfly-209.mp4');
               }));
             },
               child: Text('打开视频播放22',

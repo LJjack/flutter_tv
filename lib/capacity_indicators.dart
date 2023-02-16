@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 class CapacityIndicator extends StatefulWidget {
   /// Creates a capacity indicator.
@@ -6,21 +7,13 @@ class CapacityIndicator extends StatefulWidget {
   /// [initialValue] must be in range of min to max.
   const CapacityIndicator({
     Key? key,
-    required this.initialValue,
-    this.bufferedValue = 0,
+    required this.controller,
     this.min = 0.0,
     this.max = 1.0,
     this.color = Colors.green,
     this.bufferedColor = Colors.greenAccent,
     this.onChanged,
-  })  : assert(initialValue >= min && initialValue <= max),
-        super(key: key);
-
-  /// The current initial value of the indicator. Must be in the range of min to max.
-  final double initialValue;
-
-  /// The current buffered value of the indicator. Must be in the range of min to max.
-  final double bufferedValue;
+  }) : super(key: key);
 
   final double min;
   final double max;
@@ -31,12 +24,44 @@ class CapacityIndicator extends StatefulWidget {
   final Color color;
   final Color bufferedColor;
 
+  final VideoPlayerController controller;
+
   @override
   State<CapacityIndicator> createState() => _CapacityIndicatorState();
 }
 
 class _CapacityIndicatorState extends State<CapacityIndicator> {
-  bool _showBall = false;
+  double initialValue = 0.0;
+  double bufferedValue = 0.0;
+
+  _CapacityIndicatorState() {
+    listener = () {
+      if (!mounted) {
+        return;
+      }
+
+      if (controller.value.isInitialized) {
+        final int duration = controller.value.duration.inMilliseconds;
+        final int position = controller.value.position.inMilliseconds;
+
+        int maxBuffering = 0;
+        for (final DurationRange range in controller.value.buffered) {
+          final int end = range.end.inMilliseconds;
+          if (end > maxBuffering) {
+            maxBuffering = end;
+          }
+        }
+        initialValue = position / duration;
+        bufferedValue = maxBuffering / duration;
+
+        setState(() {});
+      }
+    };
+  }
+
+  late VoidCallback listener;
+
+  VideoPlayerController get controller => widget.controller;
 
   // Returns a number between min and max, proportional to value, which must
   // be between 0.0 and 1.0.
@@ -49,7 +74,28 @@ class _CapacityIndicatorState extends State<CapacityIndicator> {
   void _handleUpdate(Offset lp, double width) {
     double value = (lp.dx / width);
     value = value.clamp(0.0, 1.0);
-    widget.onChanged?.call(_lerp(value));
+    double relative = _lerp(value);
+
+    seekToRelativePosition(relative);
+
+    widget.onChanged?.call(relative);
+  }
+
+  void seekToRelativePosition(double relative) {
+    final Duration position = controller.value.duration * relative;
+    controller.seekTo(position);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(listener);
+  }
+
+  @override
+  void deactivate() {
+    controller.removeListener(listener);
+    super.deactivate();
   }
 
   @override
@@ -58,26 +104,17 @@ class _CapacityIndicatorState extends State<CapacityIndicator> {
       final width = constraints.maxWidth;
       return SizedBox(
         width: width,
-        height: 4,
+        height: 30,
         child: GestureDetector(
           onPanStart: (event) => _handleUpdate(event.localPosition, width),
           onPanUpdate: (event) => _handleUpdate(event.localPosition, width),
           onPanDown: (event) => _handleUpdate(event.localPosition, width),
-          child: MouseRegion(
-            onEnter: (_) => setState(() {
-              _showBall = true;
-            }),
-            onExit: (_) => setState(() {
-              _showBall = false;
-            }),
-            child: CustomPaint(
-              painter: _CapacityCellPainter(
-                color: widget.color,
-                bufferedColor: widget.bufferedColor,
-                value: widget.initialValue / widget.max,
-                bufferedValue: widget.bufferedValue / widget.max,
-                showBall: _showBall,
-              ),
+          child: CustomPaint(
+            painter: _CapacityCellPainter(
+              color: widget.color,
+              bufferedColor: widget.bufferedColor,
+              value: initialValue / widget.max,
+              bufferedValue: bufferedValue / widget.max,
             ),
           ),
         ),
@@ -92,14 +129,12 @@ class _CapacityCellPainter extends CustomPainter {
     required this.value,
     required this.bufferedColor,
     required this.bufferedValue,
-    this.showBall = true,
   });
 
   final Color color;
   final Color bufferedColor;
   final double value;
   final double bufferedValue;
-  final bool showBall;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -112,8 +147,8 @@ class _CapacityCellPainter extends CustomPainter {
               right: bufferedValue == 1
                   ? const Radius.circular(radius)
                   : Radius.zero)
-          .toRRect(Offset.zero &
-              Size(size.width * bufferedValue.clamp(0.0, 1.0), size.height)),
+          .toRRect(Offset(0, (size.height - 4) * 0.5) &
+              Size(size.width * bufferedValue.clamp(0.0, 1.0), 4)),
       Paint()..color = bufferedColor,
     );
 
@@ -123,23 +158,22 @@ class _CapacityCellPainter extends CustomPainter {
         left: const Radius.circular(radius),
         right: value == 1 ? const Radius.circular(radius) : Radius.zero,
       ).toRRect(
-        Offset.zero & Size(size.width * value.clamp(0.0, 1.0), size.height),
+        Offset(0, (size.height - 4) * 0.5) &
+            Size(size.width * value.clamp(0.0, 1.0), 4),
       ),
       Paint()..color = color,
     );
 
     /// Draw ball
-    if (showBall) {
-      canvas.drawRRect(
-          RRect.fromRectAndRadius(
-              Rect.fromCenter(
-                  center: Offset(
-                      size.width * value.clamp(0.0, 1.0), size.height * 0.5),
-                  width: 20,
-                  height: 20),
-              const Radius.circular(10)),
-          Paint()..color = color);
-    }
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromCenter(
+                center: Offset(
+                    size.width * value.clamp(0.0, 1.0), size.height * 0.5),
+                width: 20,
+                height: 20),
+            const Radius.circular(10)),
+        Paint()..color = color);
   }
 
   @override

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tv/capacity_indicators.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayView extends StatefulWidget {
@@ -58,7 +59,6 @@ class VideoPlayViewState extends State<VideoPlayView> {
     } else if (widget.fileUrl.startsWith('assets/')) {
       _controller = VideoPlayerController.asset(widget.fileUrl)
         ..initialize().then((_) {
-          print("===================");
           _controller!.play();
           mySetState(() {});
         });
@@ -106,43 +106,55 @@ class VideoPlayViewState extends State<VideoPlayView> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Material(
       child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         color: Colors.grey,
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-          if (!_controller!.value.isInitialized) initPlayView(),
-          if (_controller!.value.isInitialized)
-            Container(
-                color: Colors.black,
-                alignment: Alignment.topCenter,
-                child: AspectRatio(
-                    aspectRatio: _controller!.value.aspectRatio,
-                    child: VideoPlayer(_controller!))),
-        ]),
+        child: initPlayView(),
       ),
     );
   }
 
   Widget initPlayView() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          height: 221,
-          width: MediaQuery.of(context).size.width,
-          color: Colors.black,
-        ),
-        const SizedBox(
-          height: 30,
-          width: 30,
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.red,
+    if (!_controller!.value.isInitialized) {
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            color: Colors.black,
           ),
-        ),
-      ],
-    );
+          const SizedBox(
+            height: 30,
+            width: 30,
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.red,
+            ),
+          ),
+        ],
+      );
+    } else {
+
+      return Stack(
+        children: [
+          Container(
+              color: Colors.black,
+              width: MediaQuery.of(context).size.width,
+          alignment: Alignment.center,
+              child: AspectRatio(
+                  aspectRatio: _controller!.value.aspectRatio,
+                  child: VideoPlayer(_controller!))),
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: CapacityIndicator(controller: _controller!),
+          ),
+        ],
+      );
+    }
+
   }
 }
