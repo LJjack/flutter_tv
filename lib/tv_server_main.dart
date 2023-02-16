@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tv/image_swiper.dart';
 import 'package:flutter_tv/video_image.dart';
+import 'package:flutter_tv/video_macos.dart';
 import 'package:flutter_tv/video_play_view.dart';
 
 import 'movie_room.dart';
@@ -10,7 +11,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-
+import 'package:video_player_win/video_player_win_plugin.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,11 @@ void main() {
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+
+
+  if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
+
+
   runApp(const MyApp());
 }
 
@@ -84,6 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
                 return  VideoPlayView('assets/Butterfly-209.mp4');
+              }));
+            },
+              child: Text('打开视频播放22',
+                style: Theme.of(context).textTheme.headline4,),),
+
+
+
+            MaterialButton(onPressed: () {
+              Navigator.of(context)
+                  .push(CupertinoPageRoute(builder: (BuildContext context) {
+                return  VideoViewMacOS('assets/Butterfly-209.mp4');
               }));
             },
               child: Text('打开视频播放22',

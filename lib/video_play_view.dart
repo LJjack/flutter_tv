@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayView extends StatefulWidget {
@@ -53,21 +52,19 @@ class VideoPlayViewState extends State<VideoPlayView> {
         widget.fileUrl.startsWith("https://")) {
       _controller = VideoPlayerController.network(widget.fileUrl)
         ..initialize().then((_) {
-          EasyLoading.dismiss();
           _controller!.play();
           mySetState(() {});
         });
     } else if (widget.fileUrl.startsWith('assets/')) {
       _controller = VideoPlayerController.asset(widget.fileUrl)
         ..initialize().then((_) {
-          EasyLoading.dismiss();
+          print("===================");
           _controller!.play();
           mySetState(() {});
         });
     } else {
       _controller = VideoPlayerController.file(File(widget.fileUrl))
         ..initialize().then((_) {
-          EasyLoading.dismiss();
           _controller!.play();
           mySetState(() {});
         });
@@ -106,19 +103,9 @@ class VideoPlayViewState extends State<VideoPlayView> {
       isPressTimer = null;
     }
 
-    if (EasyLoading.isShow) {
-      EasyLoading.dismiss();
-    }
     super.dispose();
   }
 
-  void _reset(BuildContext context) {
-    startPosition = const Offset(0, 0);
-    movePan = 0;
-    layoutHeight = context.size!.height;
-    layoutWidth = context.size!.width;
-    volumePercentage = '';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +139,7 @@ class VideoPlayViewState extends State<VideoPlayView> {
           height: 30,
           width: 30,
           child: CircularProgressIndicator(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.red,
           ),
         ),
       ],
