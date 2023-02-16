@@ -93,11 +93,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline4,),),
 
 
-
+//'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'
             MaterialButton(onPressed: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return  VideoViewMacOS('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
+                return  const VideoViewMacOS('assets/Butterfly-209.mp4');
               }));
             },
               child: Text('打开视频播放22',

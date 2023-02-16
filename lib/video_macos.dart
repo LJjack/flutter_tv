@@ -18,27 +18,26 @@ class _VideoViewMacOSState extends State<VideoViewMacOS> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: 400,
-      ),
-      child: Video(
+    return Scaffold(
+
+      body: Video(
         videoData: VideoData.asset(
           path: widget.url,
         ),
         builder: (BuildContext context, Widget child, Video video,
             VideoState videoState, VideoController videoController) {
+         
+
           return Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(
-                Radius.circular(20),
-              ),
-            ),
+            color: Colors.black,
             child: Stack(
-              fit: StackFit.passthrough,
               children: [
-                child,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  // height: 300,
+                  child: AspectRatio(aspectRatio:  videoController.aspectRatio,child: child,),
+                ),
+                // child,
                 Positioned(
                   bottom: 5,
                   left: 0,
