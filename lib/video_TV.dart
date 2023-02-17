@@ -1,11 +1,12 @@
-import 'package:flutter/foundation.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:play/play.dart';
 
 class VideoTV extends StatefulWidget {
-  final String url;
+  final String fileUrl;
 
-  const VideoTV(this.url,{
+  const VideoTV(this.fileUrl,{
     Key? key,
   }) : super(key: key);
 
@@ -15,15 +16,27 @@ class VideoTV extends StatefulWidget {
 
 class _VideoTVState extends State<VideoTV> {
 
+  late VideoData videoData;
+
+  @override
+  void initState() {
+    if (widget.fileUrl.startsWith("http://") ||
+        widget.fileUrl.startsWith("https://")) {
+      videoData = VideoData.network(url: widget.fileUrl);
+    } else if (widget.fileUrl.startsWith('assets/')) {
+      videoData = VideoData.asset( path: widget.fileUrl) ;
+    } else {
+      videoData = VideoData.file(file: File(widget.fileUrl)) ;
+    }
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Video(
-        videoData: VideoData.asset(
-          path: widget.url,
-        ),
+        videoData: videoData,
         builder: (BuildContext context, Widget child, Video video,
             VideoState videoState, VideoController videoController) {
          
@@ -91,13 +104,7 @@ class _VideoTVState extends State<VideoTV> {
                             },
                           ),
                         ),
-                        InkWell(
-                          onTap: () {},
-                          child: const Icon(
-                            Icons.fullscreen,
-                            color: Colors.white,
-                          ),
-                        ),
+
                       ],
                     ),
                   ),
