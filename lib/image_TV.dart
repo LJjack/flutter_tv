@@ -45,11 +45,10 @@ class _ImageTVState extends PlayState<ImageTV> {
           if (payload.type == PlayType.image.index) {
             PlayModel data = payload.data!;
 
-            setState(() {
+            setState(() async{
               ImageCMD cmd = ImageCMD.cmd(data.name ?? 0);
 
               switch(cmd) {
-
                 case ImageCMD.next:
                   swiperController.next();
                   break;
@@ -60,8 +59,9 @@ class _ImageTVState extends PlayState<ImageTV> {
                   swiperController.startAutoplay();
                   break;
                 case ImageCMD.stop:
+                  await swiperController.move(0);
                   swiperController.stopAutoplay();
-                  swiperController.move(0);
+
                   break;
                 case ImageCMD.number:
                   swiperController.move(data.index);

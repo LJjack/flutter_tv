@@ -203,17 +203,16 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 80,
               child: DropdownButton3(
                 initialValue: DropdownCMD.auto,
-                onChanged: (value) {
+                onChanged: (value) async{
                   if (value == DropdownCMD.auto) {
                     swiperController.startAutoplay();
-                    final model =
-                    PlayModel(name: ImageCMD.play.value);
+                    final model = PlayModel(name: ImageCMD.play.value);
                     toServerSend(model: model, type: PlayType.image.value);
                   } else if (value == DropdownCMD.hand) {
+                    await swiperController.move(0);
                     swiperController.stopAutoplay();
-                    swiperController.move(0);
-                    final model =
-                    PlayModel(name: ImageCMD.stop.value);
+
+                    final model = PlayModel(name: ImageCMD.stop.value);
                     toServerSend(model: model, type: PlayType.image.value);
                   }
                 },
