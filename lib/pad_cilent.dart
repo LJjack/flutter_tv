@@ -206,8 +206,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (value) {
                   if (value == DropdownCMD.auto) {
                     swiperController.startAutoplay();
+                    final model =
+                    PlayModel(name: ImageCMD.play.value);
+                    toServerSend(model: model, type: PlayType.image.value);
                   } else if (value == DropdownCMD.hand) {
                     swiperController.stopAutoplay();
+                    swiperController.move(0);
+                    final model =
+                    PlayModel(name: ImageCMD.stop.value);
+                    toServerSend(model: model, type: PlayType.image.value);
                   }
                 },
               ))

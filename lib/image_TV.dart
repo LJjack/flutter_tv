@@ -61,9 +61,9 @@ class _ImageTVState extends PlayState<ImageTV> {
                   break;
                 case ImageCMD.stop:
                   swiperController.stopAutoplay();
+                  swiperController.move(0);
                   break;
                 case ImageCMD.number:
-                  swiperController.stopAutoplay();
                   swiperController.move(data.index);
                   break;
                 case ImageCMD.unknown:
