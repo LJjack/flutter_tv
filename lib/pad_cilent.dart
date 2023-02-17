@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double sliderValue = 0.0;
   int selectedIndex = 0;
 
-  bool autoplay = false;
+  bool autoplay = true;
 
   late SwiperController swiperController;
 
@@ -205,13 +205,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 initialValue: DropdownCMD.auto,
                 onChanged: (value) {
                   if (value == DropdownCMD.auto) {
-                    setState(() {
-                      autoplay = true;
-                    });
+                    swiperController.startAutoplay();
                   } else if (value == DropdownCMD.hand) {
-                    setState(() {
-                      autoplay = false;
-                    });
+                    swiperController.stopAutoplay();
                   }
                 },
               ))

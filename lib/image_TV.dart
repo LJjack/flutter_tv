@@ -22,6 +22,7 @@ class ImageTV extends StatefulWidget {
 
 class _ImageTVState extends PlayState<ImageTV> {
   late SwiperController swiperController;
+  bool autoplay = true;
 
   @override
   void initState() {
@@ -65,6 +66,9 @@ class _ImageTVState extends PlayState<ImageTV> {
                   swiperController.stopAutoplay();
                   swiperController.move(data.index);
                   break;
+                case ImageCMD.unknown:
+                  // TODO: Handle this case.
+                  break;
               }
 
             });
@@ -91,7 +95,7 @@ class _ImageTVState extends PlayState<ImageTV> {
           );
         },
         // indicatorLayout: PageIndicatorLayout.COLOR,
-        autoplay: true,
+        autoplay: autoplay,
         itemCount: images.length,
         // pagination: const SwiperPagination(),
         controller: swiperController,
