@@ -38,13 +38,17 @@ class Payload {
 }
 
 class PlayModel {
-
- final String name;
+//图片或视频类型
+ final int name;
+ //视频的进度
  final double progress;
+ //图片的选择哪个
+ final int index;
 
  PlayModel({
-   required this.name,
+    this.name = 0,
     this.progress = 0.0,
+   this.index = 0,
  });
 
 
@@ -52,13 +56,15 @@ class PlayModel {
    return {
      'name': name,
      'progress': progress,
+     'index': index,
    };
  }
 
  factory PlayModel.fromMap(Map<String, dynamic> map) {
    return PlayModel(
-     name: map['name']??'',
+     name: map['name']?.toInt() ?? 0,
      progress: map['progress']?.toDouble() ?? 0.0,
+     index: map['index']?.toInt() ?? 0,
    );
  }
 

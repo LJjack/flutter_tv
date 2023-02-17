@@ -67,15 +67,24 @@ class _MyHomePageState extends State<MyHomePage> {
         Payload payload = Payload.fromJson(event);
         clientPort = payload.port;
         if (payload.port != server.port) {
-          if (payload.type == PlayType.video.index) {
+          if (payload.type == PlayType.video.value) {
+            final data = payload.data!;
+            final cmd = VideoCMD.cmd(data.name);
+
             setState(() {
-              if (payload.data?.name == kVideoNextPause) {
-                opening = false;
-              } else if (payload.data?.name == kVideoNextPlay) {
-                opening = true;
-              } else if (payload.data?.name == kVideoSlider) {
-                sliderValue = payload.data?.progress ?? 0.0;
+              switch (cmd) {
+
+                case VideoCMD.play:
+                  opening = true;
+                  break;
+                case VideoCMD.pause:
+                  opening = false;
+                  break;
+                case VideoCMD.slider:
+                  sliderValue = data.progress ?? 0.0;
+                  break;
               }
+
             });
           }
         } else {
@@ -105,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       message: "服务端发送消息",
                       type: PlayType.video.index,
                       data: PlayModel(
-                          name: opening ? kVideoNextPlay : kVideoNextPause));
+                          name: opening ? VideoCMD.play.value : VideoCMD.pause.value));
 
                   server.sendTo(clientPort, payload.toJson());
                   setState(() {

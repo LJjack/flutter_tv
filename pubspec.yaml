@@ -21,7 +21,7 @@ dependencies:
 #  video_player: ^2.4.4
 #  video_player_macos: ^1.0.6
 #  video_player_win: ^1.1.5
-  chewie: ^1.3.3
+  dropdown_button2: ^1.9.2
 
 dev_dependencies:
   flutter_test:
@@ -47,10 +47,5 @@ flutter:
     - images/3.png
     - images/Butterfly-209.mp4
 
-    - assets/flutter-mark-square-64.png
     - assets/Butterfly-209.mp4
-    - assets/Butterfly-209.webm
-    - assets/bumble_bee_captions.srt
-    - assets/bumble_bee_captions.vtt
-    - assets/Audio.mp3
 

@@ -71,7 +71,12 @@ class Client {
   }
 
   /// Sends a message to the server.
-  void send(String message) {
+  void send(String message) async{
     _socket.write(message);
+  }
+
+  bool get isEmpty {
+
+    return _streamController.hasListener;
   }
 }

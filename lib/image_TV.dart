@@ -1,5 +1,3 @@
-import 'package:video_player/video_player.dart';
-
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_tv/play_State.dart';
@@ -9,18 +7,20 @@ import 'package:flutter_tv/payload.dart';
 const images = <String>[
   'images/bg0.jpeg',
   'images/bg1.jpeg',
-  'images/Butterfly-209.mp4',
+  'images/bg2.jpeg',
+  'images/bg0.jpeg',
+  'images/bg1.jpeg',
   'images/bg2.jpeg',
 ];
 
-class ImageSwiper extends StatefulWidget {
-  const ImageSwiper({Key? key}) : super(key: key);
+class ImageTV extends StatefulWidget {
+  const ImageTV({Key? key}) : super(key: key);
 
   @override
-  State<ImageSwiper> createState() => _ImageSwiperState();
+  State<ImageTV> createState() => _ImageTVState();
 }
 
-class _ImageSwiperState extends PlayState<ImageSwiper> {
+class _ImageTVState extends PlayState<ImageTV> {
   late SwiperController swiperController;
 
   @override
@@ -39,17 +39,34 @@ class _ImageSwiperState extends PlayState<ImageSwiper> {
         Payload payload = Payload.fromJson(event);
         clientPort = payload.port;
         if (payload.port != server.port) {
+
+
           if (payload.type == PlayType.image.index) {
+            PlayModel data = payload.data!;
+
             setState(() {
-              if (payload.data?.name == kImageNextPage) {
-                swiperController.next();
-              } else if (payload.data?.name == kImagePreviousPage) {
-                swiperController.previous();
-              } else if (payload.data?.name == kImagePlay) {
-                swiperController.startAutoplay();
-              } else if (payload.data?.name == kImageStop) {
-                swiperController.stopAutoplay();
+              ImageCMD cmd = ImageCMD.cmd(data.name ?? 0);
+
+              switch(cmd) {
+
+                case ImageCMD.next:
+                  swiperController.next();
+                  break;
+                case ImageCMD.previous:
+                  swiperController.previous();
+                  break;
+                case ImageCMD.play:
+                  swiperController.startAutoplay();
+                  break;
+                case ImageCMD.stop:
+                  swiperController.stopAutoplay();
+                  break;
+                case ImageCMD.number:
+                  swiperController.stopAutoplay();
+                  swiperController.move(data.index);
+                  break;
               }
+
             });
           }
         } else {
@@ -68,25 +85,13 @@ class _ImageSwiperState extends PlayState<ImageSwiper> {
         itemBuilder: (context, index) {
           final image = images[index];
 
-          if (image.endsWith('.png') ||
-              image.endsWith('.jpeg') ||
-              image.endsWith('.jpg')) {
-            return Image.asset(
-              image,
-              fit: BoxFit.fill,
-            );
-          } else if (image.endsWith('.mp4')) {
-            print("==================");
-            VideoPlayerController controller =
-                VideoPlayerController.asset(image);
-            controller.play();
-            return VideoPlayer(controller);
-          }
-
-          return Container(color: Colors.white);
+          return Image.asset(
+            image,
+            fit: BoxFit.fill,
+          );
         },
         // indicatorLayout: PageIndicatorLayout.COLOR,
-        autoplay: false,
+        autoplay: true,
         itemCount: images.length,
         // pagination: const SwiperPagination(),
         controller: swiperController,

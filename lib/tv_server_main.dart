@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tv/image_swiper.dart';
+import 'package:flutter_tv/image_TV.dart';
 import 'package:flutter_tv/video_image.dart';
-import 'package:flutter_tv/video_macos.dart';
+import 'package:flutter_tv/video_TV.dart';
 import 'package:flutter_tv/video_play_view.dart';
 
 import 'package:play/play.dart';
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(onPressed: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return const ImageSwiper();
+                return const ImageTV();
               }));
             },
             child: Text('打开图片显示',
@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(onPressed: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return  const VideoViewMacOS('assets/Butterfly-209.mp4');
+                return  const VideoTV('assets/Butterfly-209.mp4');
               }));
             },
               child: Text('打开视频播放22',

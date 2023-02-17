@@ -2,18 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:play/play.dart';
 
-class VideoViewMacOS extends StatefulWidget {
+class VideoTV extends StatefulWidget {
   final String url;
 
-  const VideoViewMacOS(this.url,{
+  const VideoTV(this.url,{
     Key? key,
   }) : super(key: key);
 
   @override
-  State<VideoViewMacOS> createState() => _VideoViewMacOSState();
+  State<VideoTV> createState() => _VideoTVState();
 }
 
-class _VideoViewMacOSState extends State<VideoViewMacOS> {
+class _VideoTVState extends State<VideoTV> {
 
 
   @override
