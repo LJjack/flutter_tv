@@ -10,6 +10,8 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 
+import 'package:video_player_win/video_player_win_plugin.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -23,8 +25,7 @@ void main() async {
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
-
-
+  if (!kIsWeb && Platform.isWindows) WindowsVideoPlayer.registerWith();
 
   runApp(const MyApp());
 }
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return  VideoPlayView('assets/Butterfly-209.mp4');
               }));
             },
-              child: Text('打开视频播放22',
+              child: Text('打开视频播放',
                 style: Theme.of(context).textTheme.headline4,),),
 
 
@@ -87,10 +88,10 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(onPressed: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return  const VideoTV('assets/Butterfly-209.mp4');
+                return  const VideoTV('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
               }));
             },
-              child: Text('打开视频播放22',
+              child: Text('打开视频播放WIN',
                 style: Theme.of(context).textTheme.headline4,),),
 
           ],
