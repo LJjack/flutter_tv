@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tv/config.dart';
 import 'package:flutter_tv/payload.dart';
-import 'package:flutter_tv/video_TV.dart';
+import 'package:video_player/video_player.dart';
 
 import '../client_server_sockets/client_server_sockets.dart';
 import '../widgets/dropdown_button.dart';
@@ -24,7 +26,7 @@ class _PadClientPageState extends State<PadClientPage> {
   bool showImage = true;
 
   late SwiperController swiperController;
-
+  late VideoPlayerController? videoController;
   String videoUrl =
       "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4";
 
@@ -221,7 +223,8 @@ class _PadClientPageState extends State<PadClientPage> {
   }
 
   Widget centerVideoView() {
-    return VideoTV(videoUrl);
+     setupController(videoUrl);
+    return VideoPlayer(videoController!);
   }
 
   Widget textButton({
@@ -254,6 +257,18 @@ class _PadClientPageState extends State<PadClientPage> {
       print("没有连接服务器");
     }
   }
+
+  void setupController(String fileUrl) {
+    if ( fileUrl.startsWith("http://") ||
+         fileUrl.startsWith("https://")) {
+      videoController = VideoPlayerController.network(  fileUrl);
+    } else if ( fileUrl.startsWith('assets/')) {
+      videoController =  VideoPlayerController.asset( fileUrl);
+    } else {
+      videoController =  VideoPlayerController.file(File( fileUrl));
+    }
+  }
+
 }
 
 const images = <String>[

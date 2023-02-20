@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tv/image_TV.dart';
-import 'package:flutter_tv/video_image.dart';
 import 'package:flutter_tv/video_TV.dart';
 import 'package:flutter_tv/video_play_view.dart';
 
@@ -71,14 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Text('打开图片显示',
               style: Theme.of(context).textTheme.headline4,),),
 
-            MaterialButton(onPressed: () {
-              Navigator.of(context)
-                  .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return const VideoImageShufflingWidget();
-              }));
-            },
-              child: Text('打开视频播放',
-                style: Theme.of(context).textTheme.headline4,),),
 
 
 
