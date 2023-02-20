@@ -11,16 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   cupertino_icons: ^1.0.2
   network_info_plus: ^3.0.2
-  play: ^0.0.17
+#  play: ^0.0.17
   card_swiper: ^2.0.4
 
   flutter_easyloading: ^3.0.5
-#  video_player: ^2.4.4
+  video_player: ^2.5.1
 #  video_player_macos: ^1.0.6
-#  video_player_win: ^1.1.5
+  video_player_win: ^1.1.6
   dropdown_button2: ^1.9.2
 
 dev_dependencies:

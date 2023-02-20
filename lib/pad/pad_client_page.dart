@@ -3,55 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tv/config.dart';
 import 'package:flutter_tv/payload.dart';
 import 'package:flutter_tv/video_TV.dart';
-import 'client_server_sockets/client_server_sockets.dart';
 
-import 'dart:io' show Platform;
+import '../client_server_sockets/client_server_sockets.dart';
+import '../widgets/dropdown_button.dart';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/services.dart';
-import 'widgets/dropdown_button.dart';
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  ///强制竖屏
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
-
-  /// Android状态栏透明
-  if (!kIsWeb && Platform.isAndroid) {
-    SystemUiOverlayStyle systemUiOverlayStyle =
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-  }
-
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '展厅平板',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class PadClientPage extends StatefulWidget {
+  const PadClientPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PadClientPage> createState() => _PadClientPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _PadClientPageState extends State<PadClientPage> {
   late Client client;
   bool opening = false;
   double sliderValue = 0.0;
@@ -118,7 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Row(
               children: [
                 Expanded(
-                  child: showImage ? centerImageView() : centerVideoView(),
+                  child: Stack(
+                    children: [
+                      Visibility(visible: showImage,child: centerImageView()),
+                      Visibility(visible: !showImage,child: centerVideoView()),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   width: 140,
@@ -240,10 +208,8 @@ class _MyHomePageState extends State<MyHomePage> {
           fit: BoxFit.fill,
         );
       },
-      // indicatorLayout: PageIndicatorLayout.COLOR,
       autoplay: autoplay,
       itemCount: images.length,
-      // pagination: const SwiperPagination(),
       controller: swiperController,
       onIndexChanged: (v) {
         print("-----------------------   $v");

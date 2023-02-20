@@ -5,7 +5,6 @@ import 'package:flutter_tv/video_image.dart';
 import 'package:flutter_tv/video_TV.dart';
 import 'package:flutter_tv/video_play_view.dart';
 
-import 'package:play/play.dart';
 
 import 'dart:io' show Platform;
 
@@ -14,7 +13,7 @@ import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await playInitialize();
+
   ///强制竖屏
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
