@@ -4,38 +4,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tv/capacity_indicators.dart';
 import 'package:video_player/video_player.dart';
 
-class VideoTV extends StatefulWidget {
+class VideoView extends StatefulWidget {
   final String fileUrl;
 
-  const VideoTV(
+  final ValueChanged<double>? onChanged;
+
+  const VideoView(
     this.fileUrl, {
     Key? key,
+        this.onChanged,
   }) : super(key: key);
 
   @override
-  State<VideoTV> createState() => _VideoTVState();
+  State<VideoView> createState() => _VideoViewState();
 }
 
-class _VideoTVState extends State<VideoTV> {
+class _VideoViewState extends State<VideoView> {
   late VideoPlayerController? controller;
 
   @override
   void initState() {
     if (widget.fileUrl.startsWith("http://") ||
         widget.fileUrl.startsWith("https://")) {
-      controller = VideoPlayerController.network( widget.fileUrl);
+      controller = VideoPlayerController.network(widget.fileUrl);
     } else if (widget.fileUrl.startsWith('assets/')) {
       controller = VideoPlayerController.asset(widget.fileUrl);
     } else {
       controller = VideoPlayerController.file(File(widget.fileUrl));
     }
     controller?.setLooping(true);
-    
+
     controller?.initialize().then((value) {
       controller?.play();
-      mySetState(() {
-
-      });
+      mySetState(() {});
     });
 
     super.initState();
@@ -51,10 +52,7 @@ class _VideoTVState extends State<VideoTV> {
 
   @override
   void dispose() {
-    controller?.removeListener(() {});
     controller?.dispose();
-
-
     super.dispose();
   }
 
@@ -97,15 +95,29 @@ class _VideoTVState extends State<VideoTV> {
               child: AspectRatio(
                   aspectRatio: controller!.value.aspectRatio,
                   child: VideoPlayer(controller!))),
+          Center(
+            child: GestureDetector(
+              child: controller!.value.isPlaying
+                  ? null
+                  : const Icon(Icons.play_arrow, color: Colors.white70, size: 100),
+              onTap: () {
+                if (controller!.value.isPlaying) {
+                  controller?.pause();
+                } else {
+                  controller?.play();
+                }
+                setState(() {});
+              },
+            ),
+          ),
           Positioned(
             bottom: 20,
             left: 20,
             right: 20,
-            child: CapacityIndicator(controller: controller!),
+            child: CapacityIndicator(controller: controller!, onChanged: widget.onChanged,),
           ),
         ],
       );
     }
-
   }
 }

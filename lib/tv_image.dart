@@ -1,26 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:flutter_tv/play_State.dart';
 import 'package:flutter_tv/config.dart';
 import 'package:flutter_tv/payload.dart';
+import 'package:flutter_tv/server_base_mixin.dart';
 
-const images = <String>[
-  'images/bg0.jpeg',
-  'images/bg1.jpeg',
-  'images/bg2.jpeg',
-  'images/bg0.jpeg',
-  'images/bg1.jpeg',
-  'images/bg2.jpeg',
-];
-
-class ImageTV extends StatefulWidget {
-  const ImageTV({Key? key}) : super(key: key);
+class TVImage extends StatefulWidget {
+  const TVImage({Key? key}) : super(key: key);
 
   @override
-  State<ImageTV> createState() => _ImageTVState();
+  State<TVImage> createState() => _TVImageState();
 }
 
-class _ImageTVState extends PlayState<ImageTV> {
+class _TVImageState extends  State<TVImage> with ServerBaseMixin{
   late SwiperController swiperController;
   bool autoplay = true;
 
@@ -28,11 +19,13 @@ class _ImageTVState extends PlayState<ImageTV> {
   void initState() {
     swiperController = SwiperController();
     super.initState();
+
+    initServer();
   }
 
-  @override
-  Future initServer() async {
-    await super.initServer();
+    initServer() async {
+    await setupServer();
+
     server.stream.listen((event) {
       print(event);
 
@@ -103,3 +96,13 @@ class _ImageTVState extends PlayState<ImageTV> {
     );
   }
 }
+
+
+const images = <String>[
+  'images/bg0.jpeg',
+  'images/bg1.jpeg',
+  'images/bg2.jpeg',
+  'images/bg0.jpeg',
+  'images/bg1.jpeg',
+  'images/bg2.jpeg',
+];

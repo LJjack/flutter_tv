@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tv/config.dart';
 import 'package:flutter_tv/payload.dart';
+import 'package:flutter_tv/video_view.dart';
 import 'package:video_player/video_player.dart';
 
 import '../client_server_sockets/client_server_sockets.dart';
@@ -85,8 +84,8 @@ class _PadClientPageState extends State<PadClientPage> {
                 Expanded(
                   child: Stack(
                     children: [
-                      Visibility(visible: showImage,child: centerImageView()),
-                      Visibility(visible: !showImage,child: centerVideoView()),
+                      Visibility(visible: showImage, child: centerImageView()),
+                      Visibility(visible: !showImage, child: centerVideoView()),
                     ],
                   ),
                 ),
@@ -214,8 +213,6 @@ class _PadClientPageState extends State<PadClientPage> {
       itemCount: images.length,
       controller: swiperController,
       onIndexChanged: (v) {
-        print("-----------------------   $v");
-
         final model = PlayModel(name: ImageCMD.number.value, index: v);
         toServerSend(model: model, type: PlayType.image.value);
       },
@@ -223,8 +220,16 @@ class _PadClientPageState extends State<PadClientPage> {
   }
 
   Widget centerVideoView() {
-     setupController(videoUrl);
-    return VideoPlayer(videoController!);
+    return VideoView(videoUrl,onChanged: (vv) {
+      print("=----===---===  $vv");
+      Payload payload = Payload(
+          port: client.port,
+          message: "pad发送消息",
+          type: PlayType.video.index,
+          data: PlayModel(name: VideoCMD.slider.value, progress: vv));
+
+      client.send(payload.toJson());
+    },);
   }
 
   Widget textButton({
@@ -255,17 +260,6 @@ class _PadClientPageState extends State<PadClientPage> {
       client.send(payload.toJson());
     } else {
       print("没有连接服务器");
-    }
-  }
-
-  void setupController(String fileUrl) {
-    if ( fileUrl.startsWith("http://") ||
-         fileUrl.startsWith("https://")) {
-      videoController = VideoPlayerController.network(  fileUrl);
-    } else if ( fileUrl.startsWith('assets/')) {
-      videoController =  VideoPlayerController.asset( fileUrl);
-    } else {
-      videoController =  VideoPlayerController.file(File( fileUrl));
     }
   }
 

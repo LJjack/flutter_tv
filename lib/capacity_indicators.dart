@@ -5,13 +5,18 @@ class CapacityIndicator extends StatefulWidget {
   /// Creates a capacity indicator.
   ///
   /// [initialValue] must be in range of min to max.
+  ///
+
+  static const Color yellowAccent = Color(0x66FFF176);
+  static const Color yellow = Color(0xFFFDD835);
+
   const CapacityIndicator({
     Key? key,
     required this.controller,
     this.min = 0.0,
     this.max = 1.0,
-    this.color = Colors.green,
-    this.bufferedColor = Colors.greenAccent,
+    this.color = Colors.yellow,
+    this.bufferedColor = yellowAccent,
     this.onChanged,
   }) : super(key: key);
 
@@ -34,6 +39,8 @@ class _CapacityIndicatorState extends State<CapacityIndicator> {
   double initialValue = 0.0;
   double bufferedValue = 0.0;
 
+  String textTime = "00:00/00:00";
+
   _CapacityIndicatorState() {
     listener = () {
       if (!mounted) {
@@ -41,18 +48,21 @@ class _CapacityIndicatorState extends State<CapacityIndicator> {
       }
 
       if (controller.value.isInitialized) {
-        final int duration = controller.value.duration.inMilliseconds;
-        final int position = controller.value.position.inMilliseconds;
+        final double duration = controller.value.duration.inMilliseconds.toDouble();
+        final double position = controller.value.position.inMilliseconds.toDouble();
 
-        int maxBuffering = 0;
+        double maxBuffering = 0;
         for (final DurationRange range in controller.value.buffered) {
-          final int end = range.end.inMilliseconds;
+          final double end = range.end.inMilliseconds.toDouble();
           if (end > maxBuffering) {
             maxBuffering = end;
           }
         }
         initialValue = position / duration;
         bufferedValue = maxBuffering / duration;
+
+        textTime = "${handleTime(
+            controller.value.position)} / ${handleTime(controller.value.duration)}";
 
         setState(() {});
       }
@@ -86,6 +96,15 @@ class _CapacityIndicatorState extends State<CapacityIndicator> {
     controller.seekTo(position);
   }
 
+  String handleTime(Duration? duration) {
+    if (duration == null) return '';
+
+    return RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
+        .firstMatch("$duration")
+        ?.group(1) ??
+        '$duration';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,26 +119,40 @@ class _CapacityIndicatorState extends State<CapacityIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final width = constraints.maxWidth;
-      return SizedBox(
-        width: width,
-        height: 30,
-        child: GestureDetector(
-          onPanStart: (event) => _handleUpdate(event.localPosition, width),
-          onPanUpdate: (event) => _handleUpdate(event.localPosition, width),
-          onPanDown: (event) => _handleUpdate(event.localPosition, width),
-          child: CustomPaint(
-            painter: _CapacityCellPainter(
-              color: widget.color,
-              bufferedColor: widget.bufferedColor,
-              value: initialValue / widget.max,
-              bufferedValue: bufferedValue / widget.max,
-            ),
-          ),
+    return Row(
+      children: [
+        SizedBox(
+          width: 60,
+          child: Text(textTime,
+              style: const TextStyle(
+                  fontSize: 10,
+                  color: Colors.black54)),
         ),
-      );
-    });
+
+        Expanded(
+          child: LayoutBuilder(builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            return SizedBox(
+              width: width,
+              height: 30,
+              child: GestureDetector(
+                onPanStart: (event) => _handleUpdate(event.localPosition, width),
+                onPanUpdate: (event) => _handleUpdate(event.localPosition, width),
+                onPanDown: (event) => _handleUpdate(event.localPosition, width),
+                child: CustomPaint(
+                  painter: _CapacityCellPainter(
+                    color: widget.color,
+                    bufferedColor: widget.bufferedColor,
+                    value: initialValue / widget.max,
+                    bufferedValue: bufferedValue / widget.max,
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
   }
 }
 
@@ -139,6 +172,28 @@ class _CapacityCellPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     const radius = 2.0;
+
+    /// Draw default
+    canvas.drawRRect(
+      const BorderRadius.horizontal(
+          left: Radius.circular(radius),
+          right:  Radius.circular(radius)
+              )
+          .toRRect(Offset(0, (size.height - 4) * 0.5) &
+      Size(size.width , 4)),
+      Paint()..color = Colors.black26,
+    );
+
+    canvas.drawRRect(
+      BorderRadius.horizontal(
+          left: const Radius.circular(radius),
+          right: bufferedValue == 1
+              ? const Radius.circular(radius)
+              : Radius.zero)
+          .toRRect(Offset(0, (size.height - 4) * 0.5) &
+      Size(size.width * bufferedValue.clamp(0.0, 1.0), 4)),
+      Paint()..color = bufferedColor,
+    );
 
     /// Draw buffered
     canvas.drawRRect(
