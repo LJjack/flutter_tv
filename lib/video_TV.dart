@@ -29,6 +29,8 @@ class _VideoTVState extends State<VideoTV> {
     } else {
       controller = VideoPlayerController.file(File(widget.fileUrl));
     }
+    controller?.setLooping(true);
+    
     controller?.initialize().then((value) {
       controller?.play();
       mySetState(() {
@@ -97,8 +99,8 @@ class _VideoTVState extends State<VideoTV> {
                   child: VideoPlayer(controller!))),
           Positioned(
             bottom: 20,
-            left: 0,
-            right: 0,
+            left: 20,
+            right: 20,
             child: CapacityIndicator(controller: controller!),
           ),
         ],
