@@ -3,6 +3,7 @@ import 'package:flutter_tv/config.dart';
 import 'package:flutter_tv/payload.dart';
 import 'package:flutter_tv/server_base_mixin.dart';
 import 'package:flutter_tv/video_view.dart';
+import 'package:video_player/video_player.dart';
 
 class TVVideo extends StatefulWidget {
   const TVVideo(this.fileUrl, {Key? key}) : super(key: key);
@@ -12,8 +13,8 @@ class TVVideo extends StatefulWidget {
   State<TVVideo> createState() => _TVVideoState();
 }
 
-class _TVVideoState extends State<TVVideo> with ServerBaseMixin{
-
+class _TVVideoState extends State<TVVideo> with ServerBaseMixin {
+  late VideoPlayerController? controller;
 
   @override
   void initState() {
@@ -32,15 +33,29 @@ class _TVVideoState extends State<TVVideo> with ServerBaseMixin{
         Payload payload = Payload.fromJson(event);
         clientPort = payload.port;
         if (payload.port != server.port) {
+          if (payload.type == PlayType.video.value) {
+            final data = payload.data!;
+            final cmd = VideoCMD.cmd(data.name);
 
+            setState(() {
+              switch (cmd) {
+                case VideoCMD.play:
+                  controller?.play();
+                  break;
+                case VideoCMD.pause:
+                  controller?.pause();
+                  break;
+                case VideoCMD.slider:
+                  if (controller != null) {
+                    controller
+                        ?.seekTo(controller!.value.duration * data.progress);
+                  }
 
-          if (payload.type == PlayType.image.index) {
-            PlayModel data = payload.data!;
-
-            setState(() async{
-              ImageCMD cmd = ImageCMD.cmd(data.name ?? 0);
-
-
+                  break;
+                case VideoCMD.unknown:
+                  // TODO: Handle this case.
+                  break;
+              }
             });
           }
         } else {
@@ -54,6 +69,11 @@ class _TVVideoState extends State<TVVideo> with ServerBaseMixin{
 
   @override
   Widget build(BuildContext context) {
-    return VideoView(widget.fileUrl);
+    return VideoView(
+      widget.fileUrl,
+      onController: (ctr) {
+        controller = ctr;
+      },
+    );
   }
 }

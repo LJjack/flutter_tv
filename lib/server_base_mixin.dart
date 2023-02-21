@@ -7,8 +7,6 @@ mixin ServerBaseMixin<T extends StatefulWidget> on State<T> {
   late Server server;
 
   int clientPort = 0;
-  bool opening = false;
-  double sliderValue = 0.0;
 
   Future setupServer() async {
     final info = NetworkInfo();

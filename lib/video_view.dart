@@ -8,11 +8,13 @@ class VideoView extends StatefulWidget {
   final String fileUrl;
 
   final ValueChanged<double>? onChanged;
+  final ValueChanged<VideoPlayerController>? onController;
 
   const VideoView(
     this.fileUrl, {
     Key? key,
         this.onChanged,
+        this.onController,
   }) : super(key: key);
 
   @override
@@ -38,6 +40,8 @@ class _VideoViewState extends State<VideoView> {
       controller?.play();
       mySetState(() {});
     });
+
+    widget.onController != null?(controller) : null;
 
     super.initState();
   }
