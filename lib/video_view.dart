@@ -9,12 +9,14 @@ class VideoView extends StatefulWidget {
 
   final ValueChanged<double>? onChanged;
   final ValueChanged<VideoPlayerController>? onController;
+  final ValueChanged<bool>? onPlay;
 
   const VideoView(
     this.fileUrl, {
     Key? key,
-        this.onChanged,
-        this.onController,
+    this.onChanged,
+    this.onController,
+    this.onPlay,
   }) : super(key: key);
 
   @override
@@ -41,7 +43,7 @@ class _VideoViewState extends State<VideoView> {
       mySetState(() {});
     });
 
-    widget.onController != null?(controller) : null;
+    widget.onController != null ? (controller) : null;
 
     super.initState();
   }
@@ -103,12 +105,15 @@ class _VideoViewState extends State<VideoView> {
             child: GestureDetector(
               child: controller!.value.isPlaying
                   ? null
-                  : const Icon(Icons.play_arrow, color: Colors.white70, size: 100),
+                  : const Icon(Icons.play_arrow,
+                      color: Colors.white70, size: 100),
               onTap: () {
                 if (controller!.value.isPlaying) {
                   controller?.pause();
+                  widget.onPlay != null ? (false) : null;
                 } else {
                   controller?.play();
+                  widget.onPlay != null ? (true) : null;
                 }
                 setState(() {});
               },
@@ -118,7 +123,10 @@ class _VideoViewState extends State<VideoView> {
             bottom: 20,
             left: 20,
             right: 20,
-            child: CapacityIndicator(controller: controller!, onChanged: widget.onChanged,),
+            child: CapacityIndicator(
+              controller: controller!,
+              onChanged: widget.onChanged,
+            ),
           ),
         ],
       );

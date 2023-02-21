@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(onPressed: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return  const TVVideo('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
+                return  const TVVideo('http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4');
               }));
             },
               child: Text('打开视频播放WIN',

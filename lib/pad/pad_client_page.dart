@@ -27,7 +27,7 @@ class _PadClientPageState extends State<PadClientPage> {
   late SwiperController swiperController;
   late VideoPlayerController? videoController;
   String videoUrl =
-      "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4";
+      "http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4";
 
   @override
   void initState() {
@@ -221,12 +221,21 @@ class _PadClientPageState extends State<PadClientPage> {
 
   Widget centerVideoView() {
     return VideoView(videoUrl,onChanged: (vv) {
-      print("=----===---===  $vv");
+      print("=----==vv=---===  $vv");
       Payload payload = Payload(
           port: client.port,
           message: "pad发送消息",
           type: PlayType.video.index,
           data: PlayModel(name: VideoCMD.slider.value, progress: vv));
+
+      client.send(payload.toJson());
+    },onPlay: (flag) {
+      print("=----==flag=---===  $flag");
+      Payload payload = Payload(
+          port: client.port,
+          message: "pad发送消息",
+          type: PlayType.video.index,
+          data: PlayModel(name: flag?VideoCMD.play.value:VideoCMD.pause.value));
 
       client.send(payload.toJson());
     },);
