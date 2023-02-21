@@ -43,7 +43,7 @@ class _VideoViewState extends State<VideoView> {
       mySetState(() {});
     });
 
-    widget.onController != null ? (controller) : null;
+    widget.onController != null ? widget.onController!(controller!) : null;
 
     super.initState();
   }
@@ -110,10 +110,12 @@ class _VideoViewState extends State<VideoView> {
               onTap: () {
                 if (controller!.value.isPlaying) {
                   controller?.pause();
-                  widget.onPlay != null ? (false) : null;
+                  print("widget.onPlay--------------------");
+                  print(widget.onPlay);
+                  widget.onPlay != null ? widget.onPlay!(false) : null;
                 } else {
                   controller?.play();
-                  widget.onPlay != null ? (true) : null;
+                  widget.onPlay != null ? widget.onPlay!(true) : null;
                 }
                 setState(() {});
               },
