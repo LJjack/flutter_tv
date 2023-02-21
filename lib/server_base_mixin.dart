@@ -11,6 +11,7 @@ mixin ServerBaseMixin<T extends StatefulWidget> on State<T> {
   Future setupServer() async {
     final info = NetworkInfo();
     final wifiIP = await info.getWifiIP();
+    print("当前IP地址： $wifiIP");
     server = Server();
     final started = await server.startServer(wifiIP ?? "172.0.0.1");
     if (!started) {

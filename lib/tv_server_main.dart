@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tv/tv_image.dart';
+import 'package:flutter_tv/tv_video.dart';
 import 'package:flutter_tv/video_view.dart';
 import 'dart:io' show Platform;
 
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(onPressed: () {
               Navigator.of(context)
                   .push(CupertinoPageRoute(builder: (BuildContext context) {
-                return  const VideoView('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
+                return  const TVVideo('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
               }));
             },
               child: Text('打开视频播放WIN',
